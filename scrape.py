@@ -15,13 +15,6 @@ def download_image(url, path):
             shutil.copyfileobj(r.raw, f)
 
 
-def to_search_string(string):
-    """
-    takes a normal string makes it a search string
-    """
-
-    return string.replace(' ','+')
-
 def search_tag(search, tag):
     """
     makes a request to google image search
