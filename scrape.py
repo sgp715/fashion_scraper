@@ -48,8 +48,6 @@ def get_links(html):
         link = link.rpartition('","ow"')[0]
         links.append(link)
 
-    print len(links)
-
     return links
 
 
