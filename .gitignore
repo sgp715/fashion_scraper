@@ -1,2 +1,4 @@
 .fashion.py.swp
 *.pyc
+*.log
+*.png
