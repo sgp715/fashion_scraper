@@ -17,7 +17,7 @@ def download_image(url, path):
 
 def search_tag(search, tag):
     """
-    makes a request to google image search
+    makes a request to google image search and returns the page html
     """
 
     search_query = search.replace(' ','+')
