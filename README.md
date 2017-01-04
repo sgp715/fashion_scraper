@@ -8,7 +8,7 @@ Scrapes google search for images based on a query and a tag
 ```
 pip install -r requirements.txt
 ```
-2. Download and install node [NodeJS](https://nodejs.org/en/download/)
+2. Download and install [NodeJS](https://nodejs.org/en/download/)
 3. install PhantomJS
 ```
 sudo npm install -g phantomjs
