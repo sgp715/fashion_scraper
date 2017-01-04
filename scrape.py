@@ -2,6 +2,10 @@ import requests
 import shutil
 from bs4 import BeautifulSoup
 from selenium import webdriver
+import time
+from selenium.common.exceptions import ElementNotVisibleException
+
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
 
 
 def download_image(url, path):
@@ -34,7 +38,7 @@ def make_request_search(url):
     makes a request to google image search and returns the page html
     """
 
-    headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'}
+    headers={'User-Agent': USER_AGENT}
     r = requests.get(url, headers=headers)
 
     html = r.text
@@ -49,13 +53,21 @@ def make_selenium_search(url):
     use selenium to google image search and returns the page html
     """
 
-    user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
-    webdriver.DesiredCapabilities.PHANTOMJS['phantomjs.page.customHeaders.User-Agent'] = user_agent
-
+    webdriver.DesiredCapabilities.PHANTOMJS['phantomjs.page.customHeaders.User-Agent'] = USER_AGENT
     browser = webdriver.PhantomJS()
-    browser.set_window_size(1120, 550)
     browser.get(url)
-    browser.save_screenshot('screen.png')
+
+    #time.sleep(3)
+
+    while True:
+        try:
+            browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            browser.find_element_by_id('smb').click()
+        except ElementNotVisibleException:
+            #browser.save_screenshot('screen.png')
+            continue
+        except:
+            break
 
     html = browser.page_source
 
