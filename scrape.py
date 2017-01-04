@@ -96,8 +96,8 @@ def get_links(html):
 
 if __name__ == "__main__":
 
-    search = 'fashion'#raw_input('What would you like th search to be?\n')
-    tag = 'vintage'#raw_input('What tag would you like to search?\n')
+    search = raw_input('What would you like th search to be?\n')
+    tag = raw_input('What tag would you like to search?\n')
 
     url = create_search_url(search, tag)
     html = make_selenium_search(url)
