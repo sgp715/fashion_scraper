@@ -57,8 +57,10 @@ def make_selenium_search(url):
     browser = webdriver.PhantomJS()
     browser.get(url)
 
-    #time.sleep(3)
-
+    """
+    to force Google to give more images we have continuously scroll and try to
+    click the give more images button
+    """
     while True:
         try:
             browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
