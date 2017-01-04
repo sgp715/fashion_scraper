@@ -43,8 +43,6 @@ def make_request_search(url):
 
     html = r.text
 
-    print html
-
     return html
 
 
@@ -57,19 +55,36 @@ def make_selenium_search(url):
     browser = webdriver.PhantomJS()
     browser.get(url)
 
+    # wait for dom to load
+    browser.execute_script('return document.readyState;')
+
+
     """
-    to force Google to give more images we have continuously scroll and try to
-    click the give more images button
+    So, to get the maximum number of images for a search, you can scroll until
+    you see the 'show more results' button. Then you can click it and scroll all
+    the way down again. But, it will not offer to show more results again (that seems
+    to give ~900 images total).
     """
+    height = -1
     while True:
-        try:
-            browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            browser.find_element_by_id('smb').click()
-        except ElementNotVisibleException:
-            #browser.save_screenshot('screen.png')
-            continue
-        except:
+
+        # scroll and set new height
+        browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        new_height = browser.execute_script("return document.body.scrollHeight;")
+
+        # if it was the same we have hit the bottom and are done
+        if height == new_height:
             break
+
+        try:
+            browser.find_element_by_id('smb').click()
+        except:
+            pass
+
+        height = new_height
+
+        # give time for images to load
+        time.sleep(3) # TODO: find a less janky way
 
     html = browser.page_source
 
@@ -99,11 +114,11 @@ def get_links(html):
 if __name__ == "__main__":
 
     search = raw_input('What would you like th search to be?\n')
-    tag = raw_input('What tag would you like to search?\n')
+    tag =   raw_input('What tag would you like to search?\n')
 
     url = create_search_url(search, tag)
     html = make_selenium_search(url)
     links = get_links(html)
 
     print "Links found:"
-    print links
+    print len(links)
