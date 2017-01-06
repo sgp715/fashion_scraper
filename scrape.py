@@ -1,124 +1,104 @@
-import requests
-import shutil
-from bs4 import BeautifulSoup
-from selenium import webdriver
-import time
-from selenium.common.exceptions import ElementNotVisibleException
+import sys, getopt, os
+from google_search import create_search_url
+from google_search import make_selenium_search
+from google_search import get_links
+from utils import download_image
 
-USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
+search = None
+path = None
+print_links = False
+
+def usage_message():
+    print "This script scrapes Google images for a clothing with specific tags"
+    print "usage: tag [-s=<search_query>] [-d=<path>] [-l]"
+    print "run -h or --help for more"
+    exit()
+
+def print_man():
+    print "This script scrapes Google images for a clothing with specific tags"
+    print "usage: tag [-s=<search_query>] [-d=<path>] [-l]"
+    print "Options:"
+    print "\t-s specify Google search query otherwise defaults used"
+    print "\t-d specify Directory to save images in"
+    print "\t-l print out image links"
+    exit()
 
 
-def download_image(url, path):
+args = sys.argv[1:]
+if len(args) < 1:
+    usage_message()
+
+f_arg = args[0]
+if f_arg == '-h' or f_arg == '--help':
+    print_man()
+
+#grab tag as first arg
+tag = f_arg
+try:
+    opts, args = getopt.getopt(args[1:], "s:d:l")
+except getopt.GetoptError:
+    print "Error getting args"
+    usage_message()
+
+for opt, arg in opts:
+    if opt in ('-h','--help'):
+        print_man()
+    if opt == '-s':
+        search = arg
+    if opt == '-d':
+        path = arg
+    if opt == '-l':
+        print_links = True
+
+def search_fashion_term(search, tag):
     """
-    given the url of an image dowload image to specified path
+    takes in a search term and returns the links
     """
-
-    r = requests.get(url, stream=True)
-    if r.status_code == 200:
-        with open(path, 'wb') as f:
-            r.raw.decode_content = True
-            shutil.copyfileobj(r.raw, f)
-
-
-def create_search_url(search, tag):
-    """
-    given the search and tag generate the url
-    """
-
-    search_query = search.replace(' ','+')
-    search_tag = tag.replace(' ','+')
-
-    url = 'https://www.google.com/search?q='+ search_query +'&espv=2&biw=1183&bih=595&site=webhp&source=lnms&tbm=isch&sa=X&ved=0ahUKEwi43K3ez6TRAhWl6YMKHaAIB7MQ_AUIBigB#tbm=isch&q='+ search_query +'&chips=q:'+ search_query +',g_1:' + search_tag
-
-    return url
-
-
-def make_request_search(url):
-    """
-    makes a request to google image search and returns the page html
-    """
-
-    headers={'User-Agent': USER_AGENT}
-    r = requests.get(url, headers=headers)
-
-    html = r.text
-
-    return html
-
-
-def make_selenium_search(url):
-    """
-    use selenium to google image search and returns the page html
-    """
-
-    webdriver.DesiredCapabilities.PHANTOMJS['phantomjs.page.customHeaders.User-Agent'] = USER_AGENT
-    browser = webdriver.PhantomJS()
-    browser.get(url)
-
-    # wait for dom to load
-    browser.execute_script('return document.readyState;')
-
-
-    """
-    So, to get the maximum number of images for a search, you can scroll until
-    you see the 'show more results' button. Then you can click it and scroll all
-    the way down again. But, it will not offer to show more results again (that seems
-    to give ~900 images total).
-    """
-    height = -1
-    while True:
-
-        # scroll and set new height
-        browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        new_height = browser.execute_script("return document.body.scrollHeight;")
-
-        # if it was the same we have hit the bottom and are done
-        if height == new_height:
-            break
-
-        try:
-            browser.find_element_by_id('smb').click()
-        except:
-            pass
-
-        height = new_height
-
-        # give time for images to load
-        time.sleep(3) # TODO: find a less janky way
-
-    html = browser.page_source
-
-    browser.quit()
-
-    return html
-
-
-def get_links(html):
-    """
-    given html finds all links on google search page
-    """
-
-    soup = BeautifulSoup(html, "html.parser")
-
-    divs = soup.findAll("div", { "class" : "rg_meta" })
-
-    links = []
-    for div in divs:
-        link = str(div).partition('"ou":"')[-1]
-        link = link.rpartition('","ow"')[0]
-        links.append(link)
-
-    return links
-
-
-if __name__ == "__main__":
-
-    search = raw_input('What would you like th search to be?\n')
-    tag =   raw_input('What tag would you like to search?\n')
-
     url = create_search_url(search, tag)
     html = make_selenium_search(url)
     links = get_links(html)
 
-    print "Links found:"
-    print len(links)
+    return links
+
+links = []
+
+print "scraping commenced..."
+if not search:
+    fashion_searches = ["fashion",
+                        "outfit",
+                        "dresses",
+                        "shirts",
+                        "skirts",
+                        "blouse",
+                        "pants",
+                        "clothes",
+                        "jeans",
+                        "boots",
+                        "shoes"]
+    for s in fashion_searches:
+        print "term -> " + s
+        links += search_fashion_term(s, tag)
+        print "links: " + str(len(links))
+else:
+    links += search_fashion_term(search, tag)
+
+print "Found " + str(len(links)) + "links:"
+
+if print_links:
+    for l in links:
+        print l
+if path:
+    print "Saving images to file"
+
+    # make the folder
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    link_num = 0
+    for l in links:
+        s = '/'
+        filename = tag + str(link_num)
+        filepath = s.join((path,filename))
+        print filepath
+        download_image(l, filepath)
+        link_num += 1
