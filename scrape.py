@@ -80,9 +80,13 @@ if not search:
         links += search_fashion_term(s, tag)
         print "links: " + str(len(links))
 else:
+    print "searching for " + search + " filtered by the " + tag + " tag"
     links += search_fashion_term(search, tag)
 
-print "Found " + str(len(links)) + "links:"
+num_links = len(links)
+print "Found " + str(num_links) + " links"
+if num_links == 0:
+    exit()
 
 if print_links:
     for l in links:
@@ -95,10 +99,13 @@ if path:
         os.makedirs(path)
 
     link_num = 0
+    links = list(set(links))
     for l in links:
-        s = '/'
+        #print l
+        #ext = l.rpartition('.')[2]
         filename = tag + str(link_num)
-        filepath = s.join((path,filename))
+        s = '/'
+        filepath = s.join((path, filename))
         print filepath
         download_image(l, filepath)
         link_num += 1
