@@ -13,11 +13,16 @@ def download_image(url, path):
     except:
         print "Could not load image: " + url
         return
+
     if r.status_code == 200:
 
         content_type = r.headers['Content-Type'].split('/')
         image = content_type[0] == 'image'
         filetype = content_type[1]
+
+        if not(image):
+            print "Not an image"
+            return
 
         filetypes = {'gif':'gif', 'jpeg':'jpg', 'png':'png'}
         filename = None

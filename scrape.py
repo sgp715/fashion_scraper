@@ -99,13 +99,10 @@ if path:
         os.makedirs(path)
 
     link_num = 0
-    links = list(set(links))
+    links = list(set(links)) # clears any duplicate links
     for l in links:
-        #print l
-        #ext = l.rpartition('.')[2]
         filename = tag + str(link_num)
         s = '/'
         filepath = s.join((path, filename))
-        print filepath
         download_image(l, filepath)
         link_num += 1
