@@ -91,6 +91,7 @@ if num_links == 0:
 if print_links:
     for l in links:
         print l
+
 if path:
     print "Saving images to file"
 
