@@ -4,15 +4,18 @@ from google_search import make_selenium_search
 from google_search import get_links
 from utils import download_image
 
+
 search = None
 path = None
 print_links = False
+
 
 def usage_message():
     print "This script scrapes Google images for a clothing with specific tags"
     print "usage: tag [-s=<search_query>] [-d=<path>] [-l]"
     print "run -h or --help for more"
     exit()
+
 
 def print_man():
     print "This script scrapes Google images for a clothing with specific tags"
@@ -41,8 +44,6 @@ except getopt.GetoptError:
     usage_message()
 
 for opt, arg in opts:
-    if opt in ('-h','--help'):
-        print_man()
     if opt == '-s':
         search = arg
     if opt == '-d':
@@ -61,7 +62,6 @@ def search_fashion_term(search, tag):
     return links
 
 links = []
-
 print "scraping commenced..."
 if not search:
     fashion_searches = ["fashion",
