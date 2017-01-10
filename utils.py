@@ -16,9 +16,13 @@ def download_image(url, path):
 
     if r.status_code == 200:
 
-        content_type = r.headers['Content-Type'].split('/')
-        image = content_type[0] == 'image'
-        filetype = content_type[1]
+        if 'Content-Type' in r.headers:
+            content_type = r.headers['Content-Type'].split('/')
+            image = content_type[0] == 'image'
+            filetype = content_type[1]
+        else:
+            print "No Content Type"
+            return
 
         if not(image):
             print "Not an image"
