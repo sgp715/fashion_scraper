@@ -3,6 +3,7 @@ from google_search import create_search_url
 from google_search import make_selenium_search
 from google_search import get_links
 from utils import download_image
+from logger_config import log
 
 
 search = None
@@ -26,6 +27,7 @@ def print_man():
     print "\t-l print out image links"
     exit()
 
+log('scrape')
 
 args = sys.argv[1:]
 if len(args) < 1:
