@@ -2,3 +2,4 @@
 *.pyc
 *.log
 *.png
+google_creds.py

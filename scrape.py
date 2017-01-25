@@ -4,6 +4,7 @@ from google_search import make_selenium_search
 from google_search import get_links
 from utils import download_image
 from logger_config import log
+import trends
 
 
 search = None
@@ -66,17 +67,8 @@ def search_fashion_term(search, tag):
 links = []
 print "scraping commenced..."
 if not search:
-    fashion_searches = ["fashion",
-                        "outfit",
-                        "dresses",
-                        "shirts",
-                        "skirts",
-                        "blouse",
-                        "pants",
-                        "clothes",
-                        "jeans",
-                        "boots",
-                        "shoes"]
+    fashion_searches = trends.get_related_words("clothing")
+    fashion_searches += trends.get_related_words("fashion")
     for s in fashion_searches:
         print "term -> " + s
         links += search_fashion_term(s, tag)
