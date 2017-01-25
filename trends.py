@@ -1,4 +1,3 @@
-import pytrends.request as tr
 import google_creds
 
 USERNAME = google_creds.username
@@ -16,7 +15,7 @@ def get_related_words(search_term):
     search_terms = [t['c'][0]['v'] for t in trends["table"]["rows"]]
 
     # TODO: make a logging info file
-    print "Google trends related terms"
+    print "Google trends related terms similar to: " + search_term
     print search_terms
 
     return search_terms

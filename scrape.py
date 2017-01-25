@@ -31,6 +31,7 @@ def print_man():
 log('scrape')
 
 args = sys.argv[1:]
+
 if len(args) < 1:
     usage_message()
 
@@ -68,7 +69,7 @@ links = []
 print "scraping commenced..."
 if not search:
     fashion_searches = trends.get_related_words("clothing")
-    fashion_searches += trends.get_related_words("fashion")
+    # fashion_searches += trends.get_related_words("fashion")
     for s in fashion_searches:
         print "term -> " + s
         links += search_fashion_term(s, tag)
