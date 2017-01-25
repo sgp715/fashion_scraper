@@ -9,6 +9,14 @@ def get_related_words(search_term):
     input: a search term we want to query google's trends with
     output: the related search terms in a list
     """
+
+
     r = tr.TrendReq(USERNAME, PASSWORD)
-    trends = r.related({'q':'clothing'}, 'top')
-    return [t['c'][0]['v'] for t in trends["table"]["rows"]]
+    trends = r.related({'q':'clothing'}, 'top') # TODO: make this choose recent dates
+    search_terms = [t['c'][0]['v'] for t in trends["table"]["rows"]]
+
+    # TODO: make a logging info file
+    print "Google trends related terms"
+    print search_terms
+
+    return search_terms
