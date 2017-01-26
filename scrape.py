@@ -71,7 +71,7 @@ if not search:
     fashion_searches = ["fashion"]
     related_words = trends.get_related_words("fashion")
     if related_words is not None:
-        words += related_words
+        fashion_searches += related_words
 
     # fashion_searches += (trends.get_related_words("clothing").append("clothing"))
     for s in fashion_searches:
