@@ -1,7 +1,6 @@
 import google_creds
-
-USERNAME = google_creds.username
-PASSWORD = google_creds.password
+import requests
+import json
 
 def get_related_words(search_term):
     """
@@ -9,13 +8,29 @@ def get_related_words(search_term):
     output: the related search terms in a list
     """
 
+    # TODO: be able to request within a time frame
+    base_url = "http://www.google.com/trends/fetchComponent?hl=en-US"
+    query = "q=" + search_term
+    cid = "cid=TOP_QUERIES_0_0"
+    export = "export=3"
+    s = '&'
+    url = s.join((base_url, query, cid, export))
 
-    r = tr.TrendReq(USERNAME, PASSWORD)
-    trends = r.related({'q':'clothing'}, 'top') # TODO: make this choose recent dates
-    search_terms = [t['c'][0]['v'] for t in trends["table"]["rows"]]
+    r = requests.get(url)
+    if r.status_code != 200:
+        print "Could not make request"
+        return
+
+    try:
+        related_json = json.loads(r.content[62:-2])
+    except:
+        print "Could not retrieve json"
+        return
+
+    related_words = [row['c'][0]['v'] for row in related_json['table']['rows']]
 
     # TODO: make a logging info file
     print "Google trends related terms similar to: " + search_term
-    print search_terms
+    print related_words
 
-    return search_terms
+    return related_words
