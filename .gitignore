@@ -2,4 +2,4 @@
 *.pyc
 *.log
 *.png
-google_creds.py
+logger_config.py
