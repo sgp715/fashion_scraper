@@ -7,11 +7,6 @@ from logger_config import log
 import trends
 
 
-search = None
-path = None
-print_links = False
-
-
 def usage_message():
     print "This script scrapes Google images for a clothing with specific tags"
     print "usage: tag [-s=<search_query>] [-d=<path>] [-l]"
@@ -30,30 +25,30 @@ def print_man():
 
 log('scrape')
 
+
 args = sys.argv[1:]
 
 if len(args) < 1:
     usage_message()
 
-f_arg = args[0]
-if f_arg == '-h' or f_arg == '--help':
-    print_man()
+tag = args[0]
 
-#grab tag as first arg
-tag = f_arg
-try:
-    opts, args = getopt.getopt(args[1:], "s:d:l")
-except getopt.GetoptError:
-    print "Error getting args"
-    usage_message()
 
-for opt, arg in opts:
-    if opt == '-s':
-        search = arg
-    if opt == '-d':
-        path = arg
-    if opt == '-l':
-        print_links = True
+path = tag
+google = False
+nordstrom = False
+
+options = args[1:]
+if "-n" in options:
+    print "using Nordstrom search"
+    nordstrom = True
+else:
+    print "using Google search"
+    google = True
+
+if "-p" in options:
+    # TODO: specify path
+    pass
 
 def search_fashion_term(search, tag):
     """
@@ -67,28 +62,22 @@ def search_fashion_term(search, tag):
 
 links = []
 print "scraping commenced..."
-if not search:
-    fashion_searches = ["fashion"]
-    related_words = trends.get_related_words("fashion")
-    if related_words is not None:
-        fashion_searches += related_words
 
-    # fashion_searches += (trends.get_related_words("clothing").append("clothing"))
-    for s in fashion_searches:
-        print "term -> " + s
-        links += search_fashion_term(s, tag)
-        print "links: " + str(len(links))
+# if n is set use Nordstrom search
+if nordstrom:
+    print "search Nordstrom"
+    # TODO: plug Nordstrom in
 else:
-    print "searching for " + search + " filtered by the " + tag + " tag"
-    links += search_fashion_term(search, tag)
+    print "searching for Google fashion filtered by the " + tag + " tag"
+    links += search_fashion_term("fashion", tag)
+
 
 num_links = len(links)
 print "Found " + str(num_links) + " links"
 if num_links == 0:
     exit()
 
-if print_links:
-    for l in links:
+for l in links:
         print l
 
 if path:
