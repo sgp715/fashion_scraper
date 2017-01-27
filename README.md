@@ -19,27 +19,8 @@ $ sudo npm install -g phantomjs
 ```
 $ python scrape.py --help
 This script scrapes Google images for a clothing with specific tags
-usage: tag [-s=<search_query>] [-d=<path>] [-l]
+usage: tag [-g | -n]
 Options:
-    -s specify Google search query otherwise defaults used
-    -d specify Directory to save images in
-    -l print out image links
-```
-
-## Examples
-* to scrape with the vintage tag (and some default search values)
-```
-$ python scrape.py vintage
-```
-* to scrape with the vintage tag and the fashion search value
-```
-$ python scrape.py vintage -s fashion
-```
-* to scrape the vintage tag and print all the links found
-```
-$ python scrape.py vintage -l
-```
-* to scrape the vintage tag and save the images to the vintage directory
-```
-$ python scrape.py vintage -d vintage
+    -g scrape Google for images with tag
+    -n scrape Nordstrom for images with tag
 ```
