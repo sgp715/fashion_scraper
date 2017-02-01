@@ -51,7 +51,7 @@ def nordstrom_make_selenium_search(url):
         html = browser.page_source
         imglinks.extend(nordstrom_get_links(html))
 
-        if len(imglinks) == total_images:
+        if len(imglinks) >= total_images:
             print "GOT ALL IMAGES"
             break
         time.sleep(5)
