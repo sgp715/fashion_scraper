@@ -6,7 +6,7 @@ import time
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
 
 
-def create_search_url(search, tag):
+def google_create_search_url(search, tag):
     """
     given the search and tag generate the url
     """
@@ -20,7 +20,7 @@ def create_search_url(search, tag):
     return url
 
 
-def make_request_search(url):
+def google_make_request_search(url):
     """
     makes a request to google image search and returns the page html
     """
@@ -33,7 +33,7 @@ def make_request_search(url):
     return html
 
 
-def make_selenium_search(url):
+def google_make_selenium_search(url):
     """
     use selenium to google image search and returns the page html
     """
@@ -54,7 +54,6 @@ def make_selenium_search(url):
     """
     height = -1
     while True:
-
         # scroll and set new height
         browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         new_height = browser.execute_script("return document.body.scrollHeight;")
@@ -81,19 +80,16 @@ def make_selenium_search(url):
     return html
 
 
-def get_links(html):
+def google_get_links(html):
     """
     given html finds all links on google search page
     """
 
     soup = BeautifulSoup(html, "html.parser")
 
-    divs = soup.findAll("div", { "class" : "rg_meta" })
-
+    images = soup.findAll("img", { "class" : "product-photo loaded" })
     links = []
-    for div in divs:
-        link = str(div).partition('"ou":"')[-1]
-        link = link.rpartition('","ow"')[0]
-        links.append(link)
+    for i in images:
+        links.append(i['src'])
 
     return links
