@@ -26,7 +26,7 @@ def nordstrom_make_selenium_search(url):
     pagenum = 1
     while True:
         print "SCRAPING..."
-        url = 'http://shop.nordstrom.com/c/womens-formal-dresses?origin=leftnav&cm_sp=Left%20Navigation-_-Formal&page='+str(pagenum)
+        #url = 'http://shop.nordstrom.com/c/womens-formal-dresses?origin=leftnav&cm_sp=Left%20Navigation-_-Formal&page='+str(pagenum)
         browser.get(url)
         pagenum += 1
 
@@ -47,7 +47,7 @@ def nordstrom_make_selenium_search(url):
 
         total_images = int(total_images)
         ############################################################
-
+        print "Gathering a total of", total_images, "images."
         html = browser.page_source
         imglinks.extend(nordstrom_get_links(html))
 

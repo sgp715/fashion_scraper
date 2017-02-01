@@ -61,8 +61,8 @@ elif search_type == "nord":
 
     nordstrom = True
     url = args[1]
-    #path = args[2]
-
+    #path = args[2] TODO
+    path = './scraped_images'
 def google_search(search, tag):
     """
     takes in a search term and returns the links
@@ -111,7 +111,10 @@ if path:
     link_num = 0
     links = list(set(links)) # clears any duplicate links
     for l in links:
-        filename = tag + str(link_num)
+        if google:
+            filename = tag + str(link_num)
+        else:
+            filename = str(link_num)
         s = '/'
         filepath = s.join((path, filename))
         download_image(l, filepath)

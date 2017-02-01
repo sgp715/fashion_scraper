@@ -7,7 +7,6 @@ def download_image(url, path):
     """
     given the url of an image dowload image to specified path
     """
-
     try:
         r = requests.get(url, stream=True)
     except:
