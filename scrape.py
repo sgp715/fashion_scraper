@@ -119,3 +119,5 @@ if path:
         filepath = s.join((path, filename))
         download_image(l, filepath)
         link_num += 1
+print "DONE"
+exit()

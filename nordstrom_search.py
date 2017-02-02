@@ -26,8 +26,9 @@ def nordstrom_make_selenium_search(url):
     pagenum = 1
     while True:
         print "SCRAPING..."
-        url = url+str(pagenum)
-        browser.get(url)
+        page_url = url+"&page="+str(pagenum)
+        print page_url
+        browser.get(page_url)
         pagenum += 1
 
         time.sleep(5)
@@ -51,7 +52,7 @@ def nordstrom_make_selenium_search(url):
         html = browser.page_source
         imglinks.extend(nordstrom_get_links(html))
 
-        if len(imglinks) >= total_images:
+        if len(imglinks) >= total_images-10:
             print "GOT ALL IMAGES"
             break
         time.sleep(5)
