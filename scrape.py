@@ -4,25 +4,28 @@ from google_search import google_make_selenium_search
 from google_search import google_get_links
 from nordstrom_search import nordstrom_make_selenium_search
 from nordstrom_search import nordstrom_get_links
+from macys_search import macys_make_selenium_search
+from macys_search import macys_get_links
 from utils import download_image
 from logger_config import log
 import trends
 
 
 def usage_message():
-    print "This script scrapes Nordstrom website or Google images for a clothing with specific tags"
-    print "Nordstrom usage: search_type url [-p path]"
+    print "This script scrapes Nordstrom, Macys website or Google images for a clothing with specific tags"
+    print "Nordstrom/Macys usage: search_type url path (e.g. python -nord <url>)"
     print "Google usage: search_type tag [-s=<search_query>] [-d=<path>] [-l]"
     print "run -h or --help for more"
     exit()
 
 
 def print_man():
-    print "This script scrapes Nordstrom website or Google images for a clothing with specific tags"
-    print "Nordstrom usage: search_type url path"
+    print "This script scrapes Nordstrom and Macys website or Google images for a clothing with specific tags"
+    print "Nordstrom/Macys usage: search_type url path (e.g. python nord <url>)"
     print "Google usage: search_type tag [-s=<search_query>] [-d=<path>] [-l]"
     print "search_type:"
     print "\tnord specify Nordstrom search"
+    print "\tmacys specify Macys search"
     print "\tgoogle specify Google search"
     print "Google options:"
     print "\t-s specify Google search query otherwise defaults used"
@@ -41,6 +44,7 @@ search_type = args[0]
 
 
 nordstrom = False
+macys = False
 google = False
 
 if search_type == "google": #might need fixing due to changes made
@@ -63,6 +67,16 @@ elif search_type == "nord":
     url = args[1]
     #path = args[2] TODO
     path = './scraped_images'
+
+elif search_type == "macys":
+    if len(args) < 2:
+        usage_message()
+
+    macys = True
+    url = args[1]
+    #path = args[2] TODO
+    path = './scraped_images'
+
 def google_search(search, tag):
     """
     takes in a search term and returns the links
@@ -81,6 +95,14 @@ def nordstrom_search(url):
 
     return links
 
+def macys_search(url):
+    """
+    takes in a url and returns the links
+    """
+    links = macys_make_selenium_search(url)
+
+    return links
+
 links = []
 print "scraping commenced..."
 # if n is set use Nordstrom search
@@ -88,6 +110,9 @@ if nordstrom:
     print "searching Nordstrom"
     links += nordstrom_search(url)
 
+elif macys:
+    print "searching macys"
+    links += macys_search(url)
 else:
     print "searching for Google fashion filtered by the " + tag + " tag"
     links += google_search("fashion", tag)
