@@ -50,9 +50,10 @@ def macys_make_selenium_search(url):
             total_pages = temp
 
 
-    print "Gathering a total of", total_images, "images from", total_pages, "pages"
+    print "Gathering at least", total_images, "images from", total_pages, "pages"
     ############################################################
     while pagenum <= total_pages:
+        print "On page:", pagenum
         browser.get(page_url)
         html = browser.page_source
         imglinks.extend(macys_get_links(html))
