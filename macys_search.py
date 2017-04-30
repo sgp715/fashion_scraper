@@ -29,27 +29,43 @@ def macys_make_selenium_search(url):
     imglinks = []
     pagenum = 1
     page_url = url
-    while True:
-        print "SCRAPING..."
-        print page_url
 
+    print "SCRAPING..."
+
+    browser.get(page_url)
+    #### GETTING NUMBER OF IMAGES AVAILABLE FOR CATEGORY #####
+    total_images_div = browser.find_element_by_class_name('productCount')
+    total_images = int(total_images_div.text)
+    total_pages_div = browser.find_elements_by_class_name('paginationSpacer')
+    pages_list = []
+    total_pages = 0
+
+    for i in range(len(total_pages_div)):
+        try:
+             temp = int(total_pages_div[i].text)
+        except:
+             continue
+
+        if temp > total_pages:
+            total_pages = temp
+
+
+    print "Gathering a total of", total_images, "images from", total_pages, "pages"
+    ############################################################
+    while pagenum <= total_pages:
         browser.get(page_url)
-        #### GETTING NUMBER OF IMAGES AVAILABLE FOR CATEGORY #####
-        total_images_div = browser.find_element_by_class_name('productCount')
-        total_images = int(total_images_div.text)
-
-        ############################################################
-        print "Gathering a total of", total_images, "images."
         html = browser.page_source
         imglinks.extend(macys_get_links(html))
 
-        if len(imglinks) >= total_images-10:
-            print "GOT ALL IMAGES"
-            break
+        if page_url.find("Pageindex/") != -1:
+            page_url = page_url.split("Pageindex/"+str(pagenum))
+            pagenum += 1
+            page_url = page_url[0] + "Pageindex/"+str(pagenum)+page_url[1]
 
-        page_url = url.split("Pageindex/"+str(pagenum))
-        pagenum += 1
-        page_url = page_url[0] + "Pageindex/"+str(pagenum)+page_url[1]
+        else:
+            pagenum += 1
+            idx = page_url.find("?id")
+            page_url = page_url[0:idx] + "/Pageindex/" + str(pagenum) + page_url[idx:]
 
         time.sleep(5)
 
@@ -65,6 +81,7 @@ def macys_get_links(html):
     soup = BeautifulSoup(html, "html.parser")
     #image_div = browser.find_element_by_class_name('fullColorOverlayOff')
     image_divs = soup.findAll("img", { "class" : "thumbnailImage" })
+    print len(image_divs)
     links = []
     #ctr = 0
     for i in image_divs:
